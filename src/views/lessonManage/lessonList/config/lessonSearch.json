@@ -1,0 +1,41 @@
+[
+    {
+      "key": "time",
+      "label": "上架时间区间",
+      "value": {
+        "start": "",
+        "end": ""
+      },
+      "placeholder": "",
+      "type": "startEndDate",
+      "isDefaultDate": true
+    },
+    {
+        "key": "CurriculumName",
+        "label": "课程名称",
+        "value": "",
+        "placeholder": "课程名称",
+        "type": "input"
+    },
+    {
+      "key": "ContentType",
+      "label": "课程分类",
+      "value": "",
+      "placeholder": "课程分类",
+      "type": "select",
+      "options":[
+        {
+          "value":1,
+          "label":"音频"
+        },
+        {
+          "value":2,
+          "label":"视频"
+        },
+        {
+          "value":3,
+          "label":"图文"
+        }
+      ]
+    }
+]

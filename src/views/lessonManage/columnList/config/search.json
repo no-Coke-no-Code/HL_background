@@ -1,0 +1,36 @@
+[
+    {
+      "key": "time",
+      "label": "上架时间区间",
+      "value": {
+        "start": "",
+        "end": ""
+      },
+      "placeholder": "处理时间区间",
+      "type": "startEndDate",
+      "isDefaultDate": true
+    },
+    {
+        "key": "SpecialColumnType",
+        "label": "专栏类型",
+        "value": "",
+        "placeholder": "专栏类型",
+        "type": "select",
+        "options":[]
+    },
+    {
+        "key": "CurriculumName",
+        "label": "专栏名称",
+        "value": "",
+        "placeholder": "手机号码",
+        "type": "input"
+    },
+    {
+        "key": "ClassiFicationId",
+        "label": "课程分类",
+        "value": "",
+        "placeholder": "商品分类",
+        "type": "select",
+        "options":[]
+    }
+]

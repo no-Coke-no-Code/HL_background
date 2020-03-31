@@ -1,0 +1,20 @@
+[
+    {
+      "key": "time",
+      "label": "上架时间区间",
+      "value": {
+        "start": "",
+        "end": ""
+      },
+      "placeholder": "",
+      "type": "startEndDate",
+      "isDefaultDate": true
+    },
+    {
+        "key": "Title",
+        "label": "活动名称",
+        "value": "",
+        "placeholder": "活动名称",
+        "type": "input"
+    }
+]

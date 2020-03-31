@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>icon.ico">
+  <!-- <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./fonts/iconfont.css"> -->
+  <link rel="stylesheet" href="http://192.168.3.130:5099/static/style/index.css">
+  <link rel="stylesheet" href="http://192.168.3.130:5099/static/fonts/iconfont.css">
+  <link rel="stylesheet" href="//unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <title></title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/screenfull.js/4.2.0/screenfull.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script src="https://cdnmcat.com/d/js/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnmcat.com/d/js/ele-common.js"></script>
+  <script src="<%= BASE_URL %>js/cos-auth.min.js"></script>
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but mt-admin2.0-cli doesn't work properly without JavaScript enabled. Please enable it to
+      continue.</strong>
+  </noscript>
+  <div id="commonHeader" class="commonHeader">
+    <!-- 头部 -->
+    <div class="head flex space-between">
+      <div class="logo-wrapper">
+        <img class="logo" src="./image/logo.png" alt="">
+        <span class="logo-name">汇乐购后台</span>
+      </div>
+
+      <div class="info-wrapper">
+        <div class="infoItem systemItem">
+          <el-popover width="180" trigger="hover" popper-class="popperClass">
+            <div class="sysManage">
+              <div class="item">用户管理</div>
+              <div class="item">角色管理</div>
+              <div class="item">用户登陆记录</div>
+              <div class="item">用户操作记录</div>
+              <div class="item">系统积分规则设置</div>
+              <div class="item">用户解除锁定</div>
+              <div class="item">总部ip白名单</div>
+              <div class="item">腾讯云配置</div>
+              <div class="item">短信地区设置</div>
+              <div class="item">验证码配置</div>
+            </div>
+            <div slot="reference">
+              <i class="icon mtFont mtui-icon-shezicaidang"></i>
+              <span>系统管理</span>
+            </div>
+          </el-popover>
+        </div>
+        <!-- 消息 -->
+        <div class="infoItem message-box">
+          <span class="icon mtFont mtui-icon-information"></span>
+          <span class="badge">{{Badge}}</span>
+        </div>
+        <!-- 客服 -->
+        <div class="infoItem">
+          <span class="icon mtFont mtui-icon-customerService"></span>
+        </div>
+        <!-- 全屏 -->
+        <div class="infoItem">
+          <span :class="['icon', 'mtFont', isFullScreen ? 'mtui-icon-min' :'mtui-icon-max']"
+            v-on:click="handleFullScreen"></span>
+        </div>
+        <!-- 个人信息 -->
+        <div class="infoItem">
+          <el-popover width="180" popper-class="popperClass">
+            <div class="userInfo">
+              <div class="item">
+                <avatar username="李飞飞" :size="30" :rounded="true" color="#fff">
+                </avatar><span>李飞飞</span>
+              </div>
+              <div class="item"><i class="icon mtFont mtui-icon-ziliaoxiangqing"></i><span>资料详情</span></div>
+              <div class="item"><i class="icon mtFont mtui-icon-xuigaiziliao"></i><span>修改资料</span></div>
+              <div class="item"><i class="icon mtFont mtui-icon-xuigaimima"></i><span>修改密码</span></div>
+              <div class="item" v-on:click="logout"><i class="icon mtFont mtui-icon-anquantuichu"></i><span>安全退出</span>
+              </div>
+            </div>
+            <div slot="reference">
+              <avatar username="李飞飞" :size="30" :rounded="true" color="#fff">
+              </avatar>
+              <span class="arrow MCatFont mtui-icon-unfold"></span>
+            </div>
+          </el-popover>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主体 -->
+    <div class="container flex">
+      <!-- 导航条 -->
+      <div :class="['nav-bar',isHoverInNavBar?'active':'']" v-on:mouseleave="outStyle" v-on:mouseover="selectStyle ">
+        <ul class="list-wrapper">
+          <li class="list-item " :class="i == barIndex? 'list-act ': ''" v-for="(item,i) in barList" :key="i"
+            v-on:click="barClick(i,$event)">
+            <a class="flex align-center" :href="item.Url" target="_blank">
+              <span class="icon mtFont" :class="item.Icon"></span>
+              <span class="name">{{item.MenuName}}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 注入的vue单页面文件 -->
+      <div class="content flex-item">
+        <div id="app"></div>
+      </div>
+    </div>
+  </div>
+  <!-- built files will be auto injected -->
+  <script>
+    //定义一个中央事件总线对象，用于不同vue实例间的通信
+    (function () {
+      var that = new Vue();
+      var emitTemp = that.$emit;
+      var onTemp = that.$on;
+      var emitEventMap = {},
+        onEventMap = {};
+      // 重写 $on 和 $emit 方法，使得可以先 $emit 后 $on
+      that.$on = function (event, callback) {
+        var self = this
+        // 处理先触发过的事件
+        if (Object.prototype.toString.call(emitEventMap[event]) === "[object Array]" && typeof callback ===
+          'function') {
+          emitEventMap[event].forEach(function (arges) {
+            callback.apply(self, arges);
+          });
+          emitEventMap[event] = undefined;
+        }
+        return onTemp.call(self, event, callback);
+      }
+      that.$emit = function () {
+        var args = [].slice.call(arguments),
+          self = this;
+        var eventName = args[0];
+        // 如果没有订阅，则先保存参数，等到定于后再触发
+        if (!onEventMap[eventName]) {
+          if (!emitEventMap[eventName]) {
+            emitEventMap[eventName] = [];
+          }
+          emitEventMap[eventName].push(args.slice(1));
+        }
+        return emitTemp.apply(this, args);
+      }
+      Vue.prototype.bus = that;
+    })();
+
+
+
+    Vue.component('avatar', {
+      template: '<div class="vue-avatar--wrapper" :style="[style, customStyle]" aria-hidden="true"><span v-show="!this.isImage">{{ userInitial }}</span></div>',
+      props: {
+        username: {
+          type: String
+        },
+        initials: {
+          type: String
+        },
+        backgroundColor: {
+          type: String
+        },
+        color: {
+          type: String
+        },
+        customStyle: {
+          type: Object
+        },
+        inline: {
+          type: Boolean
+        },
+        size: {
+          type: Number,
+          default: 50
+        },
+        src: {
+          type: String
+        },
+        rounded: {
+          type: Boolean,
+          default: true
+        },
+        lighten: {
+          type: Number,
+          default: 80
+        }
+      },
+      data: function () {
+        return {
+          backgroundColors: [
+            '#F44336', '#FF4081', '#9C27B0', '#673AB7',
+            '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688',
+            '#4CAF50', '#8BC34A', '#CDDC39', /* '#FFEB3B' , */ '#FFC107',
+            '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'
+          ]
+        }
+      },
+      mounted: function () {
+        if (!this.isImage) {
+          this.$emit('avatar-initials', this.username, this.userInitial)
+        }
+      },
+      computed: {
+        background: function () {
+          if (!this.isImage) {
+            return this.backgroundColor || this.randomBackgroundColor(this.username.length, this.backgroundColors)
+          }
+        },
+        fontColor: function () {
+          if (!this.isImage) {
+            return this.color || this.lightenColor(this.background, this.lighten)
+          }
+        },
+        isImage: function () {
+          return Boolean(this.src)
+        },
+        style: function () {
+          const style = {
+            display: this.inline ? 'inline-flex' : 'flex',
+            // width: this.size + 'px',
+            width: this.size + 'px',
+            height: this.size + 'px',
+            borderRadius: this.rounded ? '50%' : 0,
+            lineHeight: (this.size + Math.floor(this.size / 20)) + 'px',
+            fontWeight: 'bold',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center'
+          }
+
+          const imgBackgroundAndFontStyle = {
+            background: 'transparent url(' + this.src + ') no-repeat scroll 0% 0% / ' + this.size + 'px' + this
+              .size + 'px content-box border-box'
+          }
+          const initialBackgroundAndFontStyle = {
+            backgroundColor: this.background,
+            font: Math.floor(this.size / 2.5) + 'px/' + this.size + 'px Helvetica, Arial, sans-serif',
+            color: this.fontColor
+          }
+          const backgroundAndFontStyle = (this.isImage) ?
+            imgBackgroundAndFontStyle :
+            initialBackgroundAndFontStyle
+          Object.assign(style, backgroundAndFontStyle)
+          return style
+        },
+        userInitial: function () {
+          if (!this.isImage) {
+            const initials = this.initials || this.initial(this.username)
+            return initials
+          }
+          return ''
+        }
+      },
+      methods: {
+        initial: function (username) {
+          let parts = username.split(/[ -]/)
+          let initials = ''
+          for (var i = 0; i < parts.length; i++) {
+            initials += parts[i].charAt(0)
+          }
+          if (initials.length > 3 && initials.search(/[A-Z]/) !== -1) {
+            initials = initials.replace(/[a-z]+/g, '')
+          }
+          initials = initials.substr(0, 3).toUpperCase()
+          return initials
+        },
+        randomBackgroundColor: function (seed, colors) {
+          return colors[seed % (colors.length)]
+        },
+        lightenColor: function (hex, amt) {
+          var usePound = false
+          if (hex[0] === '#') {
+            hex = hex.slice(1)
+            usePound = true
+          }
+          var num = parseInt(hex, 16)
+          var r = (num >> 16) + amt
+          if (r > 255) r = 255
+          else if (r < 0) r = 0
+          var b = ((num >> 8) & 0x00FF) + amt
+          if (b > 255) b = 255
+          else if (b < 0) b = 0
+          var g = (num & 0x0000FF) + amt
+          if (g > 255) g = 255
+          else if (g < 0) g = 0
+          return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16)
+        }
+      }
+    })
+    var app = new Vue({
+      el: '#commonHeader',
+      data: {
+        badge: 0,
+        barList: [],
+        barIndex: 0, //该值在不同的模块应该指向不同的索引
+        isFullScreen: false,
+
+        isHoverInNavBar: false,
+        stayTimer: null
+      },
+      computed: {
+        Badge: function () {
+          if (this.badge > 99) {
+            return '99+';
+          }
+          return this.badge;
+        }
+      },
+
+      created: function () {
+        // this.badge = 100;
+      },
+
+      mounted: function () {
+        var that = this;
+        document.addEventListener('keydown', function (e) {
+          if (e.keyCode == '122' || e.key == 'F11' || e.code == 'F11') {
+            e.preventDefault()
+            that.handleFullScreen()
+          }
+        })
+        document.addEventListener("fullscreenchange", function (event) {
+          if (document.fullscreenElement) {
+            console.log('进入全屏');
+            that.isFullScreen = true;
+          } else {
+            console.log('退出全屏');
+            that.isFullScreen = false;
+          }
+        });
+        // this.getMenuListByUser()
+        // 接收单页面内的菜单事件
+        that.bus.$on("GetMenuTreeByUser", function (barList) {
+          that.barList = barList;
+          that.getHashBarIndex();
+        });
+
+      },
+      methods: {
+        logout: function () {
+          localStorage.removeItem("SYSTEMSETTINGTOKEN")
+          window.location.href = "/m/login"
+        },
+        selectStyle: function () {
+          var self = this
+          clearTimeout(self.stayTimer)
+          self.stayTimer = setTimeout(function () {
+            self.isHoverInNavBar = true
+          }, 500)
+        },
+        outStyle: function () {
+          clearTimeout(this.stayTimer)
+          this.isHoverInNavBar = false
+        },
+        // 根据用户获取菜单树列表
+        getMenuListByUser: function () {
+          var self = this
+          var headers = {};
+          var token = localStorage.getItem('SYSTEMSETTINGTOKEN')
+          headers["Authorization"] = token;
+          try {
+            $.ajax({
+              type: "post",
+              data: {},
+              url: "/api/MCatMenu/MenuGetMenuTreeByUser",
+              headers,
+              success: function (data) {
+                console.log(data);
+                if (data.Code === 1) {
+                  self.barList = data.Data.ChildNode || [];
+                  // 将获取得到的菜单通过中央事件总线对象分发给各个实例
+                  console.log(self.bus === this)
+                  self.bus.$emit("GetMenuTreeByUser", self.barList);
+                  self.getHashBarIndex()
+                } else {
+                  self.$message({
+                    type: 'error',
+                    message: data.Data.Message || data.Message
+                  })
+                }
+                self.showLoginLoading = false
+              },
+              error: function (xhr, type) {
+                self.$message({
+                  message: '超时或服务错误',
+                  type: 'warning'
+                });
+                self.showLoginLoading = false
+              }
+            });
+          } catch (e) {
+            console.log(e)
+            self.showLoginLoading = false
+          }
+        },
+        getHashBarIndex: function () {
+          // var hash = this.getHash();
+          var barIndex = this.getBarIndex();
+          this.barIndex = barIndex || 0;
+
+          // //监听浏览器前进后退
+          window.addEventListener('hashchange', (e) => {
+            // var hash = this.getHash();
+            var barIndex = this.getBarIndex();
+            this.barIndex = barIndex || 0;
+          })
+        },
+        getHash: function () {
+          var hash = window.location.hash;
+          if (!hash) return;
+          var hashArray = hash.split('/'); // 例如：/#/home，只需要拿到home即可
+          return hashArray[1];
+        },
+        getBarIndex: function () {
+          //通过遍历菜单数组，找到module跟url上面一样的，并赋值使之高亮
+          var barIndex;
+          this.barList.forEach(function (item, i) {
+            if (item.Url === window.location.pathname) {
+              barIndex = i;
+            }
+          });
+          return barIndex;
+        },
+        handleFullScreen: function () {
+          if (!screenfull.enabled) {
+            this.$message({
+              message: "你的浏览器无法全屏!",
+              type: "warning"
+            });
+            return false;
+          }
+          screenfull.toggle();
+        },
+        barClick: function (i, event) {
+          this.outStyle()
+          if (this.barIndex == i) {
+            event.preventDefault();
+            return false;
+          }
+          // this.barIndex = i;
+          //由于菜单栏的打开或者关闭只能通过修改store状态来触发，所以对于不同的vue实例，可定义一个全局的对象来实现订阅事件
+          this.bus.$emit('barChange');
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

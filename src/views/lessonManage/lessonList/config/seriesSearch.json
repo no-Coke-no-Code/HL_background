@@ -1,0 +1,66 @@
+[
+    {
+      "key": "time",
+      "label": "上架时间区间",
+      "value": {
+        "start": "",
+        "end": ""
+      },
+      "placeholder": "",
+      "type": "startEndDate",
+      "isDefaultDate": true
+    },
+    {
+      "key": "SpecialColumnType",
+      "label": "专栏类型",
+      "value": 0,
+      "placeholder": "专栏类型",
+      "type": "select",
+      "options":[
+        {
+          "value":0,
+          "label":"全部"
+        },
+        {
+          "value":1,
+          "label":"内容专栏"
+        },
+        {
+          "value":2,
+          "label":"组合专栏"
+        }
+      ]
+    },
+    {
+        "key": "CurriculumName",
+        "label": "专栏名称",
+        "value": "",
+        "placeholder": "专栏名称",
+        "type": "input"
+    },
+    {
+        "key": "ContentType",
+        "label": "课程分类",
+        "value": 0,
+        "placeholder": "课程分类",
+        "type": "select",
+        "options":[
+          {
+            "value":0,
+            "label":"全部"
+          },
+          {
+            "value":1,
+            "label":"音频"
+          },
+          {
+            "value":2,
+            "label":"视频"
+          },
+          {
+            "value":3,
+            "label":"图文"
+          }
+        ]
+    }
+]

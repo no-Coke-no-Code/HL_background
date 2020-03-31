@@ -1,0 +1,20 @@
+[
+    {
+      "key": "time",
+      "label": "注册时间区间",
+      "value": {
+        "start": "",
+        "end": ""
+      },
+      "placeholder": "",
+      "type": "startEndDate",
+      "isDefaultDate": true
+    },
+    {
+        "key": "GuideName",
+        "label": "导购员名称",
+        "value": "",
+        "placeholder": "导购员名称",
+        "type": "input"
+    }
+]

@@ -1,0 +1,34 @@
+[
+    {
+      "key": "time",
+      "label": "处理时间区间",
+      "value": {
+        "start": "",
+        "end": ""
+      },
+      "placeholder": "处理时间区间",
+      "type": "startEndDate"
+    },
+    {
+      "key": "Name",
+      "label": "商品名称",
+      "value": "",
+      "placeholder": "商品名称",
+      "type": "input"
+    },
+    {
+        "key": "CommodityCode",
+        "label": "商品编号",
+        "value": "",
+        "placeholder": "商品编号",
+        "type": "input"
+    },
+    {
+        "key": "CommodityCategoryId",
+        "label": "商品分类",
+        "value": "",
+        "placeholder": "商品分类",
+        "type": "select",
+        "options":[]
+    }
+]
