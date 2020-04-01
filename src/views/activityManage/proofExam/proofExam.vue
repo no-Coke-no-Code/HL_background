@@ -6,7 +6,7 @@
         <tab :tabList="tabList" @selectChange="selectChange"></tab>
 
         <div class="tableWrapper">
-             <el-table :data="proofList" style="margin-top:20px;" class="proofTable" border>
+             <el-table :data="proofList" style="margin-top:20px;" class="proofTable" border height="500px">
                 <el-table-column label="序号" type="index"></el-table-column>
                 <el-table-column label="活动名称" prop="Title"></el-table-column>
                 <el-table-column label="导购员" width="200px">
@@ -17,8 +17,8 @@
                             :src="scope.row.Guide.HeadimgUrl" 
                             @click="imgList[0] = scope.row.Guide.HeadimgUrl;bigPictureVisible = true"/>
                             <div>
-                                <span class="asistantName">{{scope.row.Guide.TrueName}}</span>
-                                <span class="asistantPhone">{{scope.row.Guide.Phone}}</span>
+                                <p class="asistantName">{{scope.row.Guide.TrueName}}</p>
+                                <p class="asistantPhone">{{scope.row.Guide.Phone}}</p>
                             </div>
                         </div>
                     </template>
@@ -37,7 +37,7 @@
                         }}
                     </template>
                 </el-table-column>
-                <el-table-column label="提交时间" width="300px">
+                <el-table-column label="提交时间" width="200px">
                     <template slot-scope="scope">
                         <p>时间：{{scope.row.TimeInfo.SubmitTime}}</p>
                     </template>
@@ -61,14 +61,14 @@
                             <p class="wait" v-if="scope.row.ProductAward.AuditStatus === 1">待审核</p>
                             <p class="success" v-if="scope.row.ProductAward.AuditStatus === 2">审核通过</p>
                             <p class="fail" v-if="scope.row.ProductAward.AuditStatus === 3">审核失败</p>
-                            <p class="reason" v-if="scope.row.ProductAward.AuditStatus === 3">{{scope.row.ProductAward.AuditRemark}}</p>
+                            <p class="reason" v-if="scope.row.ProductAward.AuditStatus === 3 && scope.row.ProductAward.AuditRemark">备注:{{scope.row.ProductAward.AuditRemark}}</p>
                         </div>
                         <div :class="{'failReason':scope.row.OrderAward.AuditStatus === 3}">
                             <p v-if="scope.row.OrderAward.AuditStatus === 0">进行中</p>
                             <p class="wait" v-if="scope.row.OrderAward.AuditStatus === 1">待审核</p>
                             <p class="success" v-if="scope.row.OrderAward.AuditStatus === 2">审核通过</p>
                             <p class="fail" v-if="scope.row.OrderAward.AuditStatus === 3">审核失败</p>
-                            <p class="reason" v-if="scope.row.OrderAward.AuditStatus === 3">{{scope.row.ProductAward.AuditRemark}}</p>
+                            <p class="reason" v-if="scope.row.OrderAward.AuditStatus === 3 && scope.row.OrderAward.AuditRemark">备注:{{scope.row.OrderAward.AuditRemark}}</p>
                         </div>
                     </template>
                 </el-table-column>
@@ -86,11 +86,11 @@
                     <template slot-scope="scope" style="text-align:center;">
                         <div style="border-bottom:1px solid #EBEEF5">
                             <div v-if="scope.row.ProductAward.AuditStatus === 1">
-                                <span class="action" @click="productExamDialog(1,scope.row)">手动审核</span>
+                                <span class="action" @click="productExamDialog(1,scope.row)" style="margin-right:10px">手动审核</span>
                                 <span class="action" @click="examFail(scope.row,1)">审核失败</span>
                             </div>
-                            <div v-if="scope.row.ProductAward.AuditStatus === 2 && !scope.row.ProductAward.IsCommodityComplete" class="action" @click="productExamDialog(2,scope.row)">完善信息</div>
-                            <div v-if="scope.row.ProductAward.AuditStatus === 2 && scope.row.ProductAward.IsCommodityComplete" class="action" @click="productExamDialog(3,scope.row)">查看信息</div>
+                            <div v-if="scope.row.ProductAward.AuditStatus === 2 && !scope.row.IsCommodityComplete" class="action" @click="productExamDialog(2,scope.row)">完善信息</div>
+                            <div v-if="scope.row.ProductAward.AuditStatus === 2 && scope.row.IsCommodityComplete" class="action" @click="productExamDialog(3,scope.row)">查看信息</div>
                             <div v-if="scope.row.ProductAward.AuditStatus === 3" style="visibility:hidden;">无</div>
                         </div>
                         <div>
@@ -118,39 +118,44 @@
         <el-dialog
         :title="dialogTitle"
         :visible.sync="examDialog"
-        width="30%">
+        width="60%">
             <div class="item">
                 <span class="label">销售小票</span>
                 <div class="imgWrapper">
-                    <img :src="item" v-for="(item,index) in SalesImgList" :key="index" class="saleImg"/>
+                    <img 
+                    :src="item" 
+                    v-for="(item,index) in SalesImgList" 
+                    :key="index" class="saleImg" 
+                    @click="imgList[0] = item;bigPictureVisible = true"
+                    />
                 </div>
             </div>
-            <el-form v-model="productAwardObj" :rules="productAwardRules" v-if="dialogTitle === '单品奖励审核'">
+            <el-form ref="productAward1" :model="productAwardObj" :rules="productAwardObj.productAwardRules" v-if="dialogTitle === '单品奖励审核'">
                 <el-table :data="productAwardObj.productAwardList">
                     <el-table-column label="产品货号">
                         <template slot-scope="scope">
-                            <el-form-item :prop="'productAwardList.'+scope.$index+'CommodityCode'" :rules="productAwardRules.CommodityCode">
+                            <el-form-item :prop="'productAwardList.'+scope.$index+'.CommodityCode'" :rules="productAwardObj.productAwardRules.CommodityCode">
                                 <el-input v-model="scope.row.CommodityCode"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column label="商品原价">
                         <template slot-scope="scope">
-                            <el-form-item :prop="'productAwardList.'+scope.$index+'OriginalPrice'" :rules="productAwardRules.OriginalPrice">
+                            <el-form-item :prop="'productAwardList.'+scope.$index+'.OriginalPrice'" :rules="productAwardObj.productAwardRules.OriginalPrice">
                                 <el-input v-model="scope.row.OriginalPrice"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column label="实际销售价(元)">
                         <template slot-scope="scope">
-                            <el-form-item :prop="'productAwardList.'+scope.$index+'RealPrice'" :rules="productAwardRules.RealPrice">
+                            <el-form-item :prop="'productAwardList.'+scope.$index+'.RealPrice'" :rules="productAwardObj.productAwardRules.RealPrice">
                                 <el-input v-model="scope.row.RealPrice"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column label="规则金额(元)">
                         <template slot-scope="scope">
-                            <el-form-item :prop="'productAwardList.'+scope.$index+'AwardMoney'" :rules="productAwardRules.AwardMoney">
+                            <el-form-item :prop="'productAwardList.'+scope.$index+'.AwardMoney'" :rules="productAwardObj.productAwardRules.AwardMoney">
                                 <el-input v-model="scope.row.AwardMoney"></el-input>
                             </el-form-item>
                         </template>
@@ -158,7 +163,7 @@
                 </el-table>
             </el-form>
 
-            <el-form v-model="productAwardObj" :rules="productAwardRules" v-if="dialogTitle === '完善信息'">
+            <el-form ref="productAward2" :model="productAwardObj" :rules="productAwardObj.productAwardRules" v-if="dialogTitle === '完善信息'">
                 <el-table :data="productAwardObj.productAwardList">
                     <el-table-column label="产品货号">
                         <template slot-scope="scope">
@@ -167,47 +172,45 @@
                     </el-table-column>
                     <el-table-column label="商品原价">
                         <template slot-scope="scope">
-                            <el-form-item :prop="'productAwardList.'+scope.$index+'OriginalPrice'" :rules="productAwardRules.OriginalPrice">
+                            <el-form-item :prop="'productAwardList.'+scope.$index+'.OriginalPrice'" :rules="productAwardObj.productAwardRules.OriginalPrice">
                                 <el-input v-model="scope.row.OriginalPrice"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column label="实际销售价(元)">
                         <template slot-scope="scope">
-                            <el-form-item :prop="'productAwardList.'+scope.$index+'RealPrice'" :rules="productAwardRules.RealPrice">
+                            <el-form-item :prop="'productAwardList.'+scope.$index+'.RealPrice'" :rules="productAwardObj.productAwardRules.RealPrice">
                                 <el-input v-model="scope.row.RealPrice"></el-input>
                             </el-form-item>
                         </template>
                     </el-table-column>
                     <el-table-column label="规则金额(元)">
                         <template slot-scope="scope">
-                            <el-form-item :prop="'productAwardList.'+scope.$index+'AwardMoney'" :rules="productAwardRules.AwardMoney">
-                                <el-input v-model="scope.row.AwardMoney"></el-input>
-                            </el-form-item>
+                            <p>{{scope.row.AwardMoney}}</p>
                         </template>
                     </el-table-column>
                 </el-table>
             </el-form>
 
-            <el-table :data="productAwardObj.productAwardList" v-if="dialogTitle === '订单信息'">
+            <el-table ref="productAward3" :data="productAwardObj.productAwardList" v-if="dialogTitle === '查看信息'">
                 <el-table-column label="产品货号">
                     <template slot-scope="scope">
-
+                        {{scope.row.CommodityCode}}
                     </template>
                 </el-table-column>
                 <el-table-column label="商品原价">
                     <template slot-scope="scope">
-
+                        {{scope.row.OriginalPrice}}
                     </template>
                 </el-table-column>
                 <el-table-column label="实际销售价(元)">
                     <template slot-scope="scope">
-
+                        {{scope.row.RealPrice}}
                     </template>
                 </el-table-column>
                 <el-table-column label="规则金额(元)">
                     <template slot-scope="scope">
-
+                        {{scope.row.AwardMoney}}
                     </template>
                 </el-table-column>
             </el-table>
@@ -224,7 +227,7 @@
         width="30%">
         <textarea v-model="examFailReason" style="resize:none;"></textarea>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="examFailDialog = false">取 消</el-button>
+            <el-button @click="cancelFailExam">取 消</el-button>
             <el-button type="primary" @click="confirmFailExam">确 定</el-button>
         </span>
         </el-dialog>
@@ -240,13 +243,21 @@
                     <div class="item" v-if="BarcodeList.length">
                         <span class="label">防伪码</span>
                         <div class="barCodeImgWrapper">
-                            <img v-for="(item,index) in BarcodeList" :key="index" :src="item.ImageUrl" class="barCodeImg"/>
+                            <img 
+                            v-for="(item,index) in BarcodeList" 
+                            :key="index" 
+                            :src="item.ImageUrl" 
+                            class="barCodeImg"
+                            @click="imgList[0] = item.ImageUrl;bigPictureVisible = true"/>
                         </div>
                     </div>
                     <div class="item" v-if="currentActivity.SalesDocInfo.SalesImageUrl">
                         <span class="label">销售小票</span>
                         <div class="barCodeImgWrapper">
-                            <img :src="currentActivity.SalesDocInfo.SalesImageUrl" class="barCodeImg"/>
+                            <img 
+                            :src="currentActivity.SalesDocInfo.SalesImageUrl" 
+                            class="barCodeImg"
+                            @click="imgList[0] = scope.row.Guide.HeadimgUrl;bigPictureVisible = true"/>
                         </div>
                     </div>
                     <div class="item" >
@@ -317,6 +328,20 @@ export default {
 
             productAwardObj:{
                 productAwardList:[],
+                productAwardRules:{
+                    CommodityCode: [
+                        { required: true, message: "请填写货号", trigger: "blur" }
+                    ],
+                    OriginalPrice: [
+                        { required: true, message: "请填写商品原价", trigger: "blur" }
+                    ],
+                    RealPrice: [
+                        { required: true, message: "请填写实际销售价", trigger: "blur" }
+                    ],
+                    AwardMoney: [
+                        { required: true, message: "请填写实际奖励", trigger: "blur" }
+                    ],
+                },
             }, // 活动单品奖励对象
             imgList: [], // 查看大图的图片列表
             BarcodeList: [], // 防伪码图片列表 
@@ -366,21 +391,6 @@ export default {
                     { required: true, message: "请填写审核失败原因", trigger: "blur" }
                 ],
             },
-            // 单品奖励校验规则
-            productAwardRules:{
-                CommodityCode: [
-                    { required: true, message: "请填写货号", trigger: "blur" }
-                ],
-                OriginalPrice: [
-                    { required: true, message: "请填写商品原价", trigger: "blur" }
-                ],
-                RealPrice: [
-                    { required: true, message: "请填写实际销售价", trigger: "blur" }
-                ],
-                AwardMoney: [
-                    { required: true, message: "请填写实际奖励", trigger: "blur" }
-                ],
-            },
 
             dialogType:"",
             state:"",
@@ -403,16 +413,17 @@ export default {
                 {
                     sendObj.BeginDate = this.search[i].value.start
                 }
-                else if(this.search[i].key === 'time' && this.search[i].value.end)
+                if(this.search[i].key === 'time' && this.search[i].value.end)
                 {
                     sendObj.EndDate = this.search[i].value.end;
                 }
-                else
+                if(this.search[i].key !== "time")
                 {
                     sendObj[this.search[i].key] = this.search[i].value;
                 }
             }
             sendObj = Object.assign(sendObj,{
+                ActivityType:null,
                 AuditStatus:this.state,
                 Paged:{
                     PageIndex:this.PageModel.PageIndex,
@@ -539,23 +550,39 @@ export default {
             this.currentActivity = JSON.parse(JSON.stringify(row)); 
             this.currentActivity.awardType = val;
         },
-        // 关闭审核失败弹窗
-        handleExamFailClose(){
+        // 审核失败申请取消
+        cancelFailExam(){
             this.examFailDialog = false;
+            this.examFailReason = "";
         },
-        // 审核失败申请
+        // 审核失败申请提交
         confirmFailExam(){
             let sendObj = {
                 ActivityAndGuideId:this.currentActivity.ActivityAndGuideId,
                 AwardType:this.currentActivity.awardType,
                 Remark:this.examFailReason,
             };
-            this.$$http.PcActivity
+            this.$http.PcActivity
             .ActivityAuditDeclineCtl(sendObj)
             .then((res)=>{
                 console.log(res);
-                this.examFailReason = "";
-                this.examFailDialog = false;
+                if(res)
+                {
+                    this.$message({
+                        type:"success",
+                        message:"操作成功"
+                    });
+                    this.confirmSearch();
+                    this.examFailReason = "";
+                    this.examFailDialog = false;
+                }
+                else
+                {
+                    this.$message({
+                        type:"warning",
+                        message:"操作失败"
+                    });
+                }
             })
             .catch((err)=>{
                 console.log(err);
@@ -563,37 +590,72 @@ export default {
         },
         // 提交审核申请
         confirmExam(){
+            console.log(this.productAwardObj.productAwardList,'商品列表订单');
             if(this.dialogTitle === '单品奖励审核')
             {
-                let sendObj = {
-                    UdId:"",
-                    ActivityAndGuideId:"",
-                    Title:"",
-                    AuditItemList:[]
+                this.$refs['productAward1'].validate((valid)=>{
+                    if(valid)
+                    {
+                        console.log("通过校验");
+                        let sendObj = {
+                            UdId:this.currentActivity.UdId,
+                            ActivityAndGuideId:this.currentActivity.ActivityAndGuideId,
+                            Title:this.currentActivity.Title,
+                            AuditItemList:this.productAwardObj.productAwardList
+                        }
+                        this.$http.PcActivity
+                        .ProductAwardManualAuditCtl(sendObj)
+                        .then((res)=>{
+                            console.log(res);
+                            if(res)
+                            {
+                                this.$message({
+                                    type:"warning",
+                                    message:"操作成功"
+                                });
+
+                                this.examDialog = false;
+                            }
+                        })
+                        .catch((err)=>{
+                            console.log(err);
+                        });
                     }
-                this.$http.PcActivity.ProductAwardManualAuditCtl(sendObj).then((res)=>{
-                    console.log(res);
-                    this.examDialog = false;
-                }).catch((err)=>{
-                    console.log(err);
                 });
             }
             else if(this.dialogTitle === "完善信息")
             {
-                let sendObj = {
-                    UdId:"",
-                    ActivityAndGuideId:"",
-                    Title:"",
-                    AuditItemList:[]
-                }
-                this.$http.PcActivity.ProductAwardManualAuditCtl(sendObj).then((res)=>{
-                    console.log(res);
-                    this.examDialog = false;
-                }).catch((err)=>{
-                    console.log(err);
+                this.$refs['productAward2'].validate((valid)=>{
+                    if(valid)
+                    {
+                        console.log("通过校验");
+                        let sendObj = {
+                            UdId:this.currentActivity.UdId,
+                            ActivityAndGuideId:this.currentActivity.ActivityAndGuideId,
+                            Title:this.currentActivity.Title,
+                            AuditItemList:this.productAwardObj.productAwardList
+                        }
+                        this.$http.PcActivity
+                        .ProductAwardManualAuditCtl(sendObj)
+                        .then((res)=>{
+                            console.log(res);
+                            if(res)
+                            {
+                                this.$message({
+                                    type:"success",
+                                    message:"操作成功"
+                                });
+                                this.confirmSearch();
+                                this.examDialog = false;
+                            }
+                        })
+                        .catch((err)=>{
+                            console.log(err);
+                        });
+                    }
                 });
             }
-            else if(this.dialogTitle === "查看信息")
+            else if(this.dialogTitle === '查看信息')
             {
                 this.examDialog = false;
             }
@@ -634,6 +696,7 @@ export default {
                 }
                 else
                 {
+                    this.$set(this.productAwardObj,'productAwardList',[])
                     for(let i = 0;i<res.ProductCount;i++)
                     {
                         let tempObj = {
@@ -824,10 +887,10 @@ export default {
             width: 80%;
         }
     }
-
     /deep/ .tableWrapper .el-table__header-wrapper , /deep/ .tableWrapper .el-table__fixed-header-wrapper
     {
         height: 50px;
+        overflow: hidden;
         tr
         {
             height: 50px;
@@ -873,12 +936,28 @@ export default {
         }
     } 
 
+    // 审核失败弹窗样式
+    /deep/ .el-dialog__body
+    {
+        padding: 15px 20px;
+        textarea
+        {
+            width: 100%;
+            padding: 5px;
+            height: 100px;
+            box-sizing: border-box;
+            border-radius: 2px;
+            border: 1px solid #CCCCCC;
+        }
+    }
+
     // 单品奖励弹窗样式
     /deep/ .el-dialog__wrapper
     {
         .item
         {
             display: flex;
+            margin-bottom: 10px;
             .label
             {
                 margin-right: 27px;

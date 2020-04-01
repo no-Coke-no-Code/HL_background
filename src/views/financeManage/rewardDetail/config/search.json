@@ -1,0 +1,42 @@
+[
+    {
+      "key": "time",
+      "label": "审核时间区间",
+      "value": {
+        "start": "",
+        "end": ""
+      },
+      "placeholder": "",
+      "type": "startEndDate"
+    },
+    {
+        "key": "GuideName",
+        "label": "导购员名称",
+        "value": "",
+        "placeholder": "导购员名称",
+        "type": "input"
+    },
+    {
+        "key": "BrandSystemName",
+        "label": "所属系统",
+        "value": "",
+        "placeholder": "所属系统",
+        "type": "select",
+        "options": []
+    },
+    {
+        "key": "ShopName",
+        "label": "所属门店",
+        "value": "",
+        "placeholder": "所属门店",
+        "type": "select",
+        "options": []
+    },
+    {
+        "key": "Title",
+        "label": "活动名称",
+        "value": "",
+        "placeholder": "活动名称",
+        "type": "input"
+    }
+]

@@ -106,7 +106,7 @@ export default {
   methods: {
     selectionChange(item){
       console.log(item);
-      if(item.label === "品牌名称")
+      if(item.label === "所属系统")
       {
         this.$emit("select-change",item);
       }

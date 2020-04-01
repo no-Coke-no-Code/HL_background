@@ -29,38 +29,5 @@
         "value": "",
         "placeholder": "导购员手机号码",
         "type": "input"
-    },
-    {
-        "key": "CommodityCategoryId",
-        "label": "商品分类",
-        "value": "",
-        "placeholder": "商品分类",
-        "type": "select",
-        "options":[]
-    },
-    {
-      "key": "ActivityType",
-      "label": "活动类型",
-      "value": "",
-      "placeholder": "活动类型",
-      "type": "select",
-      "options":[
-        {
-          "label":"全部",
-          "value":"0"
-        },
-        {
-          "label":"按单品",
-          "value":"1"
-        },
-        {
-          "label":"按订单",
-          "value":"2"
-        },
-        {
-          "label":"单品和订单",
-          "value":"3"
-        }
-      ]
     }
 ]

@@ -1,14 +1,13 @@
 [
     {
       "key": "time",
-      "label": "注册时间区间",
+      "label": "申请时间区间",
       "value": {
         "start": "",
         "end": ""
       },
       "placeholder": "",
-      "type": "startEndDate",
-      "isDefaultDate": true
+      "type": "startEndDate"
     },
     {
         "key": "GuideName",

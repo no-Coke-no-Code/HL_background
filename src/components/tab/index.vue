@@ -4,7 +4,7 @@
             <div class="tab">
                 <div v-for="(item,index) in tabList" :key="index" @click="chooseItem(item,index)" class="tabItem" :class="{'activeItem':activeIndex===index}">
                     <span>{{item.label}}</span>
-                    <span v-if="item.count">({{item.count}})</span>
+                    <span>({{item.count}})</span>
                 </div>
             </div>
         </div>
@@ -13,7 +13,7 @@
             <div class="tab">
                 <div v-for="(item,index) in tabList" :key="index" @click="chooseItem(item,index)" class="tabItem" :class="{'activeItem':activeIndex===index}">
                     <span>{{item.label}}</span>
-                    <span v-if="item.count">({{item.count}})</span>
+                    <span>({{item.count}})</span>
                 </div>
             </div>
         </div>

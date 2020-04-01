@@ -164,7 +164,7 @@ export default {
   left: 0;
 }
 .bigPicture {
-  z-index: 11;
+  z-index: 9999;
 }
 .bigPicture-mask {
   background-color: rgba(0, 0, 0, 0.4);
