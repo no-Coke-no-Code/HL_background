@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     getMenuGetMenuTreeByUser() {
-      this.$http.PcMCatMenu.PcMenuGetMenuTreeByUser({})
+      this.$http.MCatSysMenu.MenuGetMenuTreeByUser({})
         .then(res => {
           var menus = res.ChildNode || [];
           this.bus.$emit("GetMenuTreeByUser", menus);

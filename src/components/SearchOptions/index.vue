@@ -53,6 +53,34 @@
           <label class="label">{{item.label}}</label>
           <el-date-picker value-format="yyyy-MM-dd" v-model="item.value" type="date" placeholder="选择日期"></el-date-picker>
         </div>
+        <!-- 区省市选择器 -->
+        <div class="flex align-center mb10" style="min-width: 320px" v-if="item.type === 'regionSelect'">
+          <label class="label">{{item.label}}</label>
+          <el-select v-model="chosenArea" placeholder="选择区域" @change="regionChange(1)" style="width:100px;margin-right:5px">
+            <el-option
+              v-for="item in areaList"
+              :key="item.Id"
+              :label="item.AreaName"
+              :value="item.Id"
+            ></el-option>
+          </el-select>
+          <el-select v-model="chosenProvince" placeholder="选择省" @change="regionChange(2)" style="width:100px;margin-right:5px">
+            <el-option
+              v-for="item in provinceList"
+              :key="item.Id"
+              :label="item.ProvinceName"
+              :value="item.Id"
+            ></el-option>
+          </el-select>
+          <el-select v-model="chosenCity" placeholder="选择市" @change="regionChange(3)" style="width:100px">
+            <el-option
+              v-for="item in cityList"
+              :key="item.Id"
+              :label="item.CityName"
+              :value="item.Id"
+            ></el-option>
+          </el-select>
+        </div>
     </div>
 
     <div class="btn-wrapper">
@@ -86,7 +114,15 @@ export default {
   },
   data() {
     return {
-      search: []
+      search: [],
+
+      areaList:[],
+      provinceList:[],
+      cityList:[],
+
+      chosenArea:"",
+      chosenProvince:"",
+      chosenCity:"",
     };
   },
   watch: {
@@ -97,6 +133,23 @@ export default {
           if (item.type === "startEndDate" && item.isDefaultDate) {
             this.startTimeChange(item);
           }
+
+          // 如果存在区省市选择器，则需要先读取大区的列表
+          if(item.type === "regionSelect")
+          {
+            if(!this.areaList.length)
+            {
+              this.$http.PcArea
+              .GetListAreaAsyncCtl()
+              .then((res)=>{
+                console.log(res);
+                this.areaList = JSON.parse(JSON.stringify(res));
+              })
+              .catch((err)=>{
+                console.log(err);
+              });
+            }
+          }
         });
       },
       deep: true,
@@ -104,6 +157,53 @@ export default {
     }
   },
   methods: {
+    // 省市区选择器改变事件
+    regionChange(val){
+      // 区域值发生改变
+      if(val === 1)
+      {
+        this.cityList = [];
+        this.chosenProvince = "";
+        this.chosenCity = "";
+        let sendObj = {
+          areaId:this.chosenArea,
+        };
+        this.$http.PcArea
+        .GetListProvinceAsyncCtl(sendObj)
+        .then((res)=>{
+          this.provinceList = JSON.parse(JSON.stringify(res));
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
+        this.$emit("regionChange",this.chosenArea,this.chosenProvince,this.chosenCity);
+      }
+      // 省值发生改变
+      else if(val === 2)
+      {
+        this.cityList = [];
+        this.chosenCity = "";
+        let sendObj = {
+          provinceId:this.chosenProvince,
+        };
+        this.$http.PcArea
+        .GetListCityAsyncCtl(sendObj)
+        .then((res)=>{
+          this.cityList = JSON.parse(JSON.stringify(res));
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
+        this.$emit("regionChange",this.chosenArea,this.chosenProvince,this.chosenCity);
+      }
+      // 市值发生改变
+      else if(val === 3)
+      {
+        this.$emit("regionChange",this.chosenArea,this.chosenProvince,this.chosenCity);
+      }
+    },
+
+    // 级联选择器改变事件
     selectionChange(item){
       console.log(item);
       if(item.label === "所属系统")

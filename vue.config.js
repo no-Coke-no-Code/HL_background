@@ -31,8 +31,14 @@ module.exports = {
     },
     proxy: {
       "/api/": {
-        // target: `http://192.168.3.130:5099/`,
-        target:`http://192.168.3.130:5060/`,
+        // 测试环境
+        // target:`http://192.168.3.130:5060/`,
+
+        // 义年IP
+        taget:`http://192.168.3.212/`,
+
+        // 正式环境
+        // target:'https://sales.huiletoys.cn/',
         changeOrigin: true,
         ws: false,
         pathRewrite: {

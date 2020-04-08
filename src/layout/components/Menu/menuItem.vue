@@ -171,7 +171,7 @@ export default {
       } else {
         this.Menus = [];
       }
-      console.log("菜单列表", this.Menus);
+      // console.log("菜单列表", this.Menus);
     },
     openList(i) {
       if (this.Menus[i].ChildNode && this.Menus[i].ChildNode.length) {

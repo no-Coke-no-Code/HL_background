@@ -143,7 +143,7 @@
         </div>
 
         <div class="btnGroup flex align-center space-between">
-            <el-button @click="cancel" class="cancelBtn flex flex-center align-center">取消</el-button>
+            <el-button @click="cancelSave" class="cancelBtn flex flex-center align-center">取消</el-button>
             <el-button @click="save('form')" class="saveBtn flex flex-center align-center">保存</el-button>
         </div>
 
@@ -211,7 +211,7 @@
 </template>
 <script>
 
-import Uploader from "@/components/Uploader/MTDF_index.vue"; //上传组件
+import Uploader from "@/components/Uploader/index.vue"; //上传组件
 import QuillEditor from "@/components/QuillEditor/index.vue";
 import Pagination from "@/components/Pagination/index.vue"; //分页
 import axios from "axios";
@@ -828,7 +828,7 @@ export default {
             this.$refs.detailUploader.directUpload(newFile, type);
         },
 
-        // 保存/更新课程
+        // 保存/更新活动
         updateData() {
             console.log(this.form,'上传活动表单');
             if(this.pageState === "add")
@@ -839,6 +839,12 @@ export default {
             {
                 this.editActivity();
             }
+        },
+        // 取消保存/更新活动
+        cancelSave(){
+            this.$router.push({
+                path:"activityList"
+            });
         },
     },
 }

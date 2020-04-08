@@ -53,11 +53,31 @@ export default {
   },
   created() {
     this.onMenusWatch(this.menus);
+    console.log(this.$route,'当前路由对象');
+    // 以下是新控价后台获取二级菜单标题的方式
     // 获取title: 当前title->下级title->默认title
-    this.Title =
-      this.$route.meta.title ||
-      (this.$route.matched[0] && this.$route.matched[0].meta.title) ||
-      this.title;
+    // this.Title =
+    //   this.$route.meta.title ||
+    //   (this.$route.matched[0] && this.$route.matched[0].meta.title) ||
+    //   this.title;
+
+    // 汇乐导购后台获取二级菜单标题方式
+    // 因为进入一级菜单路由后，后直接跳转至二级菜单的第一个页面，无法正常获取该二级菜单的title
+    // 所以通过手动过滤检查二级菜单的模块名
+    let path = this.$route.path;
+    console.log(path);
+    if(path.indexOf("financeManage") !== -1)
+    {
+      this.Title = "财务管理";
+    }
+    if(path.indexOf("businessManManage") !== -1)
+    {
+      this.Title = "用户管理";
+    }
+    if(path.indexOf("activityManage") !== -1)
+    {
+      this.Title = "活动管理";
+    } 
   },
 
   mounted() {
@@ -91,7 +111,7 @@ export default {
       }
     },
     Maps(arr) {
-      console.log("初始化id", arr);
+      // console.log("初始化id", arr);
       arr.forEach((item, i) => {
         item.id = item.Id.split("-")[0]; // 取每个Id的头一组数值
         // item.isOpen = false; //是否打开下级

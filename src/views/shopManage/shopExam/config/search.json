@@ -1,0 +1,31 @@
+[
+    {
+        "key": "shopArea",
+        "label": "门店区域",
+        "value": "",
+        "placeholder": "门店区域",
+        "type": "regionSelect"
+    },
+    {
+        "key": "Name",
+        "label": "门店名称",
+        "value": "",
+        "placeholder": "门店名称",
+        "type": "input"
+      },
+    {
+        "key": "BrandSystemName",
+        "label": "门店所属系统",
+        "value": "",
+        "placeholder": "门店所属系统",
+        "type": "select",
+        "options":[]
+    },
+    {
+        "key": "Name",
+        "label": "业务员名称",
+        "value": "",
+        "placeholder": "业务员名称",
+        "type": "input"
+    }
+]

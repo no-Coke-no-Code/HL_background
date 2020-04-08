@@ -1,0 +1,9 @@
+[
+    {
+        "key": "Name",
+        "label": "系统名称",
+        "value": "",
+        "placeholder": "系统名称",
+        "type": "input"
+    }
+]

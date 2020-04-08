@@ -1,0 +1,17 @@
+[
+    {
+        "key": "shopArea",
+        "label": "门店区域",
+        "value": "",
+        "placeholder": "门店区域",
+        "type": "regionSelect"
+    },
+    {
+        "key": "BrandSystemName",
+        "label": "门店所属系统",
+        "value": "",
+        "placeholder": "门店所属系统",
+        "type": "select",
+        "options":[]
+    }
+]

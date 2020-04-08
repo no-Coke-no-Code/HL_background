@@ -18,6 +18,8 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
   <script src="https://cdnmcat.com/d/js/jquery-3.3.1.min.js"></script>
   <script src="https://cdnmcat.com/d/js/ele-common.js"></script>
+  <script src="https://map.qq.com/api/js?v=2.exp&key=3FABZ-2XH6D-AY34E-PVPE7-KOAYO-EHBI7"></script>
+  <script src="//static.hyxmt.cn/d/js/region.v5.js" async></script>
   <script src="<%= BASE_URL %>js/cos-auth.min.js"></script>
 </head>
 
@@ -417,11 +419,22 @@
           var hashArray = hash.split('/'); // 例如：/#/home，只需要拿到home即可
           return hashArray[1];
         },
+
+        contrastString: function (url, pathname) {
+          if (typeof url !== "string" || typeof pathname !== "string") return false;
+          // 如果pathname最后一个字符不是一个 '/' 则默认添加斜杠
+          var len = pathname.length;
+          if (pathname[len - 1] !== "/") {
+            pathname = pathname + "/";
+          }
+          // 判断 url 是否存在与 pathname 中
+          return pathname.toLocaleLowerCase().indexOf(url.toLocaleLowerCase()) !== -1;
+        },
         getBarIndex: function () {
           //通过遍历菜单数组，找到module跟url上面一样的，并赋值使之高亮
-          var barIndex;
+          var barIndex, that = this;
           this.barList.forEach(function (item, i) {
-            if (item.Url === window.location.pathname) {
+            if (item.Url && that.contrastString(item.Url, window.location.pathname)) {
               barIndex = i;
             }
           });

@@ -8,35 +8,26 @@
 import Layout from "@/layout";
 const routerList = [
   {
-    path: "/",
-    name: "HLbackground",
+    path: "/m/Admin/HLbackground",
     meta: {
       title: "首页"
     },
-    redirect: {
-      path: "HLbackground/index"
-    }
-  },
-  {
-    path: "/HLbackground",
-    meta: {
-      title: "汇乐导购系统后台"
-    },
-    name: "HLbackground",
+    name: "index",
     component: Layout,
-    redirect: {
-      path: "HLbackground/index"
-    },
     children: [
-      // 首页
       {
-        path: "index",
+        path: "WebView",
+        name: "WebView",
+        component: () => import("@/views/WebView/WebView")
+      },
+      {
+        path: "/",
         name: "index",
         meta: {
           title: "首页"
         },
         component: () =>
-          import("@/views/home/index.vue")
+          import( "@/views/home/index.vue")
       },
 
       // 活动管理模块
@@ -46,18 +37,27 @@ const routerList = [
         meta: {
           title: "活动管理"
         },
-        redirect: {
-          path: "activityManage/activityList"
+        redirect:{
+          path:"activityManage/activityList"
         },
       },
       {
         path: "activityManage/activityList",
         name: "activityList",
         meta: {
-          title: "活动列表页"
+          title: "活动列表"
         },
         component: () =>
           import("@/views/activityManage/activityList/activityList.vue")
+      },
+      {
+        path: "activityManage/goodManage",
+        name: "goodManage",
+        meta: {
+          title: "商品管理"
+        },
+        component: () =>
+          import("@/views/activityManage/goodManage/goodManage.vue")
       },
       {
         path: "activityManage/addActivity",
@@ -69,15 +69,6 @@ const routerList = [
           import("@/views/activityManage/addActivity/addActivity.vue")
       },
       {
-        path: "activityManage/goodManage",
-        name: "goodManage",
-        meta: {
-          title: "商品管理页"
-        },
-        component: () =>
-          import("@/views/activityManage/goodManage/goodManage.vue")
-      },
-      {
         path: "activityManage/proofExam",
         name: "proofExam",
         meta: {
@@ -87,46 +78,13 @@ const routerList = [
           import("@/views/activityManage/proofExam/proofExam.vue")
       },
 
-      // 课程管理模块
-      {
-        path: "lessonManage/lessonList/:type",
-        name: "lessonManage",
-        meta: {
-          title: "课程列表"
-        },
-        component: () =>
-          import("@/views/lessonManage/lessonList/lessonList.vue")
-      },
-
-      // 用户管理模块
-      {
-        path: "businessManManage/businessManList",
-        name: "businessManList",
-        meta: {
-          title: "业务员列表"
-        },
-        component: () =>
-          import("@/views/businessManManage/businessManList/businessManList.vue")
-      },
       // 财务管理模块
       {
         path: "financeManage",
-        name: "financeManage",
-        meta: {
-          title: "财务管理"
+        name:"财务管理",
+        redirect:{
+          path:"financeManage/withdrawList"
         },
-        redirect: {
-          path: "financeManage/withdrawList"
-        },
-      },
-      {
-        path: "financeManage/rewardDetail",
-        name: "rewardDetail",
-        meta: {
-          title: "奖励明细"
-        },
-        component: () =>
-          import("@/views/financeManage/rewardDetail/rewardDetail.vue")
       },
       {
         path: "financeManage/withdrawList",
@@ -137,7 +95,77 @@ const routerList = [
         component: () =>
           import("@/views/financeManage/withdrawList/withdrawList.vue")
       },
+      {
+        path: "financeManage/rewardDetail",
+        name: "rewardDetail",
+        meta: {
+          title: "奖励明细"
+        },
+        component: () =>
+          import("@/views/financeManage/rewardDetail/rewardDetail.vue")
+      },
+
+      // 用户管理模块
+      {
+        path: "businessManManage",
+        name: "businessManManage",
+        meta: {
+          title: "用户管理"
+        },
+        redirect:{
+          path:"businessManManage/businessManList"
+        },
+      },
+      {
+        path: "businessManManage/businessManList",
+        name: "businessManList",
+        meta: {
+          title: "业务员列表"
+        },
+        component: () =>
+          import("@/views/businessManManage/businessManList/businessManList.vue")
+      },
+
+
+      // 门店管理模块
+      {
+        path: "shopManage",
+        name: "shopManage",
+        meta: {
+          title: "门店管理"
+        },
+        redirect:{
+          path:"shopManage/shopList"
+        },
+      },
+      {
+        path: "shopManage/shopList",
+        name: "shopList",
+        meta: {
+          title: "门店列表"
+        },
+        component: () =>
+          import("@/views/shopManage/shopList/shopList.vue")
+      },
+      {
+        path: "shopManage/shopExam",
+        name: "shopList",
+        meta: {
+          title: "门店审核"
+        },
+        component: () =>
+          import("@/views/shopManage/shopExam/shopExam.vue")
+      },
+      {
+        path: "shopManage/sysManage",
+        name: "sysManage",
+        meta: {
+          title: "系统管理"
+        },
+        component: () =>
+          import("@/views/shopManage/sysManage/sysManage.vue")
+      },
     ]
   }
-];
+]
 export default routerList;
