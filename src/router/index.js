@@ -1,5 +1,5 @@
 // import Vue from 'vue'
-// 111
+// 1112
 import Router from 'vue-router'
 import beforeEachFun from './beforeEachFun';
 import afterEachFun from './afterEachFun';
